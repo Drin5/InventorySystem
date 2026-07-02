@@ -3,7 +3,7 @@
         <i data-lucide="panel-left" class="w-[18px] h-[18px]"></i>
     </button>
 
-    <h1 class="text-[15px] font-600 text-slate-900 dark:text-white hidden sm:block">@yield('title', 'Dashboard')</h1>
+    <h1 data-spa-page-title class="text-[15px] font-600 text-slate-900 dark:text-white hidden sm:block">@yield('title', 'Dashboard')</h1>
 
     <!-- Scan / search -->
     <form method="GET" action="{{ route('variants.lookup') }}" class="ml-auto hidden md:block relative">
@@ -30,7 +30,7 @@
              class="absolute right-0 mt-2 w-80 bg-white dark:bg-ink-900 rounded-lg shadow-pop border border-slate-200 dark:border-ink-800 overflow-hidden">
             <div class="px-3.5 py-2.5 border-b border-slate-200 dark:border-ink-800 flex items-center justify-between">
                 <span class="text-[13px] font-600 text-slate-900 dark:text-white">Notifications</span>
-                <a href="{{ route('notifications.index') }}" class="text-xs text-brand-600 hover:text-brand-700">View all</a>
+                <a href="{{ route('notifications.index') }}" data-spa-prefetch class="text-xs text-brand-600 hover:text-brand-700">View all</a>
             </div>
             <div class="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-ink-800">
                 @forelse ($navNotifications as $n)
@@ -61,8 +61,8 @@
                 <p class="text-[13px] font-600 truncate text-slate-900 dark:text-white">{{ auth()->user()->name }}</p>
                 <p class="text-xs text-slate-400 truncate">{{ auth()->user()->email }}</p>
             </div>
-            <a href="{{ route('profile.edit') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-ink-800 transition-colors duration-150"><i data-lucide="user" class="w-4 h-4 text-slate-400"></i> My Profile</a>
-            @can('manage settings')<a href="{{ route('settings.edit') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-ink-800 transition-colors duration-150"><i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Settings</a>@endcan
+            <a href="{{ route('profile.edit') }}" data-spa-prefetch class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-ink-800 transition-colors duration-150"><i data-lucide="user" class="w-4 h-4 text-slate-400"></i> My Profile</a>
+            @can('manage settings')<a href="{{ route('settings.edit') }}" data-spa-prefetch class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-ink-800 transition-colors duration-150"><i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Settings</a>@endcan
             <div class="my-1 border-t border-slate-100 dark:border-ink-800"></div>
             <form method="POST" action="{{ route('logout') }}">@csrf
                 <button class="w-full flex items-center gap-2.5 text-left px-3.5 py-2 text-[13px] text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors duration-150"><i data-lucide="log-out" class="w-4 h-4"></i> Log out</button>

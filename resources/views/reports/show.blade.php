@@ -13,9 +13,9 @@
             <input name="to" type="date" value="{{ $to->toDateString() }}" class="px-3 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"></div>
         <x-btn type="submit" variant="secondary">Apply</x-btn>
         <div class="ml-auto flex gap-2">
-            <x-btn href="{{ route('reports.export', [$type,'pdf']) }}?from={{ $from->toDateString() }}&to={{ $to->toDateString() }}" variant="secondary">PDF</x-btn>
-            <x-btn href="{{ route('reports.export', [$type,'excel']) }}?from={{ $from->toDateString() }}&to={{ $to->toDateString() }}" variant="secondary">Excel</x-btn>
-            <x-btn href="{{ route('reports.export', [$type,'csv']) }}?from={{ $from->toDateString() }}&to={{ $to->toDateString() }}" variant="secondary">CSV</x-btn>
+            <x-btn href="{{ route('reports.export', [$type,'pdf']) }}?from={{ $from->toDateString() }}&to={{ $to->toDateString() }}" variant="secondary" data-spa-ignore>PDF</x-btn>
+            <x-btn href="{{ route('reports.export', [$type,'excel']) }}?from={{ $from->toDateString() }}&to={{ $to->toDateString() }}" variant="secondary" data-spa-ignore>Excel</x-btn>
+            <x-btn href="{{ route('reports.export', [$type,'csv']) }}?from={{ $from->toDateString() }}&to={{ $to->toDateString() }}" variant="secondary" data-spa-ignore>CSV</x-btn>
         </div>
     </form>
 </x-card>

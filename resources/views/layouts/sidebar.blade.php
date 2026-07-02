@@ -52,7 +52,7 @@
                     $active = request()->routeIs(Str::beforeLast($item['route'], '.').'*') || request()->routeIs($item['route']);
                     $lucide = $item['lucide'] ?? 'circle';
                 @endphp
-                <a href="{{ route($item['route']) }}"
+                <a href="{{ route($item['route']) }}" data-spa-prefetch
                    class="group relative flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors duration-150
                    {{ $active
                         ? 'bg-slate-100 dark:bg-ink-800 text-slate-900 dark:text-white font-500'
@@ -66,7 +66,7 @@
     </nav>
 
     <div class="p-2.5 border-t border-slate-200 dark:border-ink-800">
-        <a href="{{ route('profile.edit') }}" class="group flex items-center gap-2.5 p-2 rounded-md hover:bg-slate-50 dark:hover:bg-ink-800/60 transition-colors duration-150">
+        <a href="{{ route('profile.edit') }}" data-spa-prefetch class="group flex items-center gap-2.5 p-2 rounded-md hover:bg-slate-50 dark:hover:bg-ink-800/60 transition-colors duration-150">
             <img src="{{ auth()->user()->avatar_url }}" class="w-7 h-7 rounded-md object-cover border border-slate-200 dark:border-ink-700" alt="">
             <div class="min-w-0 flex-1">
                 <p class="text-[13px] font-500 truncate text-slate-800 dark:text-white">{{ auth()->user()->name }}</p>

@@ -35,16 +35,25 @@
 @if ($products->count())
     <div class="bg-white dark:bg-ink-900 rounded-lg border border-slate-200 dark:border-ink-800 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-[13px]">
-                <thead class="sticky top-14 z-10">
+            <table class="w-full table-fixed text-[13px]">
+                <colgroup>
+                    <col class="w-[36%]">
+                    <col class="w-[16%]">
+                    <col class="w-[18%]">
+                    <col class="w-[12%]">
+                    <col class="w-[10%]">
+                    <col class="w-[10%]">
+                    <col class="w-[8%]">
+                </colgroup>
+                <thead class="z-10">
                     <tr class="text-left text-[11px] uppercase tracking-wide text-slate-400 bg-slate-50 dark:bg-ink-950/60 border-b border-slate-200 dark:border-ink-800">
-                        <th class="px-4 py-2.5 font-600">Item</th>
-                        <th class="px-4 py-2.5 font-600">SKU</th>
-                        <th class="px-4 py-2.5 font-600">Category</th>
-                        <th class="px-4 py-2.5 font-600 text-right">Price</th>
-                        <th class="px-4 py-2.5 font-600 text-right">On Hand</th>
-                        <th class="px-4 py-2.5 font-600">Status</th>
-                        <th class="px-4 py-2.5 font-600 text-right">Actions</th>
+                        <th class="pl-14 pr-4 py-2.5 font-600">Item</th>
+                        <th class="px-4 py-2.5 font-600 whitespace-nowrap">SKU</th>
+                        <th class="px-4 py-2.5 font-600 whitespace-nowrap">Category</th>
+                        <th class="px-4 py-2.5 font-600 text-right whitespace-nowrap">Price</th>
+                        <th class="px-4 py-2.5 font-600 text-right whitespace-nowrap">On Hand</th>
+                        <th class="px-4 py-2.5 font-600 whitespace-nowrap">Status</th>
+                        <th class="px-4 py-2.5 font-600 text-right whitespace-nowrap">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-ink-800">
@@ -57,13 +66,13 @@
                                     <span class="font-500 text-slate-800 dark:text-slate-100 group-hover:text-brand-600 truncate">{{ $product->name }}</span>
                                 </a>
                             </td>
-                            <td class="px-4 py-2.5 tnum text-slate-500">{{ $product->sku }}</td>
-                            <td class="px-4 py-2.5 text-slate-600 dark:text-slate-300">{{ $product->category?->name ?? '—' }}</td>
-                            <td class="px-4 py-2.5 text-right tnum font-500 text-slate-800 dark:text-slate-100">{{ money($product->selling_price) }}</td>
+                            <td class="px-4 py-2.5 tnum text-slate-500 whitespace-nowrap">{{ $product->sku }}</td>
+                            <td class="px-4 py-2.5 text-slate-600 dark:text-slate-300 truncate">{{ $product->category?->name ?? '—' }}</td>
+                            <td class="px-4 py-2.5 text-right tnum font-500 text-slate-800 dark:text-slate-100 whitespace-nowrap">{{ money($product->selling_price) }}</td>
                             <td class="px-4 py-2.5 text-right">
                                 <span class="tnum font-600 {{ $stock<=0 ? 'text-rose-600 dark:text-rose-400' : ($stock<=10 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-800 dark:text-slate-100') }}">{{ number_format($stock) }}</span>
                             </td>
-                            <td class="px-4 py-2.5">
+                            <td class="px-4 py-2.5 whitespace-nowrap">
                                 @if ($stock<=0)
                                     <x-badge color="red" dot>Out of stock</x-badge>
                                 @elseif ($stock<=10)
