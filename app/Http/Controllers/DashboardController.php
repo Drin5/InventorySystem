@@ -14,10 +14,16 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
         $today = Carbon::today();
         $monthStart = Carbon::now()->startOfMonth();
+        $isCashierDashboard = $user->hasRole('Cashier')
+            || ($user->can('process sales')
+                && ! $user->can('view reports')
+                && ! $user->can('manage products')
+                && ! $user->can('manage stock_in'));
 
         $stats = [
             'total_products' => Product::count(),
@@ -29,6 +35,36 @@ class DashboardController extends Controller
             'month_sales' => (float) Sale::where('sale_date', '>=', $monthStart)->sum('total'),
             'inventory_value' => (float) ProductVariant::sum(DB::raw('stock_quantity * cost_price')),
         ];
+
+        if ($isCashierDashboard) {
+            $cashierSalesToday = Sale::withCount('items')
+                ->where('cashier_id', $user->id)
+                ->whereDate('sale_date', $today)
+                ->latest('sale_date')
+                ->get();
+
+            $recentSales = $cashierSalesToday->take(6);
+            $paymentBreakdown = $cashierSalesToday
+                ->groupBy('payment_method')
+                ->map(fn ($sales) => [
+                    'count' => $sales->count(),
+                    'total' => (float) $sales->sum('total'),
+                ]);
+
+            $cashierMetrics = [
+                'today_sales' => (float) $cashierSalesToday->sum('total'),
+                'today_orders' => $cashierSalesToday->count(),
+                'items_rung' => (int) $cashierSalesToday->sum('items_count'),
+                'average_sale' => (float) ($cashierSalesToday->count() ? $cashierSalesToday->avg('total') : 0),
+            ];
+
+            return view('dashboard', [
+                'dashboardMode' => 'cashier',
+                'cashierMetrics' => $cashierMetrics,
+                'paymentBreakdown' => $paymentBreakdown,
+                'recentSales' => $recentSales,
+            ]);
+        }
 
         $lowStockItems = ProductVariant::with('product')
             ->where('stock_quantity', '<=', DB::raw('reorder_level'))
@@ -48,7 +84,13 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('dashboard', compact('stats', 'lowStockItems', 'recentActivities', 'bestSellers'));
+        return view('dashboard', [
+            'dashboardMode' => 'default',
+            'stats' => $stats,
+            'lowStockItems' => $lowStockItems,
+            'recentActivities' => $recentActivities,
+            'bestSellers' => $bestSellers,
+        ]);
     }
 
     public function chartData(Request $request)

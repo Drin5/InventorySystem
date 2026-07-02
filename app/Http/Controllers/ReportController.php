@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\GenericExport;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\PurchaseOrder;
@@ -13,7 +12,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ReportController extends Controller
 {
@@ -61,10 +62,27 @@ class ReportController extends Controller
         if ($format === 'csv' || $format === 'excel') {
             $ext = $format === 'csv' ? 'csv' : 'xlsx';
 
-            return Excel::download(
-                new GenericExport($report['headers'], $report['rows']),
-                "$filename.$ext"
-            );
+            return response()->streamDownload(function () use ($report, $ext): void {
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $sheet->fromArray([$report['headers'], ...$report['rows']], null, 'A1', true);
+
+                if ($ext === 'csv') {
+                    $writer = new Csv($spreadsheet);
+                    $writer->setUseBOM(true);
+                    $writer->setDelimiter(',');
+                } else {
+                    $writer = new Xlsx($spreadsheet);
+                }
+
+                $writer->save('php://output');
+                $spreadsheet->disconnectWorksheets();
+                unset($spreadsheet);
+            }, "$filename.$ext", [
+                'Content-Type' => $ext === 'csv'
+                    ? 'text/csv; charset=UTF-8'
+                    : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
         }
 
         if ($format === 'pdf') {
